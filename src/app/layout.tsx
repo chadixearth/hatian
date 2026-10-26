@@ -1,14 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist } from "next/font/google";
+import { SiteHeader } from "@/components/shell/site-header";
 import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
   subsets: ["latin"],
 });
 
@@ -34,12 +30,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
+    <html lang="en" className={`${geistSans.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-background text-foreground selection:bg-accent/20">
-        {children}
+        <SiteHeader />
+        <div className="flex flex-1 flex-col">{children}</div>
+        <footer className="mt-16 border-t border-border bg-surface/60">
+          <div className="mx-auto max-w-5xl px-4 py-6 text-xs text-muted sm:px-6">
+            Hatian — shared bill splitting for barkadas, housemates, and trips.
+            No sign-up required; share any group link to split expenses.
+          </div>
+        </footer>
       </body>
     </html>
   );
