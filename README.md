@@ -1,6 +1,6 @@
 # Hatian: split bills with your barkada
 
-**Live:** https://hatian.vercel.app
+**Live:** https://hatian-liard.vercel.app
 
 Hatian (Filipino for "splitting" or "sharing") tracks shared expenses for trips, boarding-house bills, group dinners, and office pasalubong runs. Nobody signs up. You create a group, send the link to the group chat, and anyone with the link can add what they paid. Hatian keeps the running balances and lists the fewest payments that settle everyone.
 
