@@ -88,7 +88,7 @@ Run schema changes with `bun run db:generate` followed by `bun run db:migrate` b
 
 Google sign-in currently uses **Neon's shared development OAuth app**, so Google's consent screen shows Neon's name. To show "Hatian" instead:
 
-1. In Google Cloud Console, create an OAuth client (Web application). Add the authorized redirect URI `https://ep-wispy-heart-az4uvmez.neonauth.c-3.ap-southeast-1.aws.neon.tech/neondb/auth/callback/google`.
+1. In Google Cloud Console, create an OAuth client (Web application). For the authorized redirect URI, copy the value shown in Neon Console → Auth → OAuth providers → Google. It is normally `https://ep-wispy-heart-az4uvmez.neonauth.c-3.ap-southeast-1.aws.neon.tech/neondb/auth/callback/google`.
 2. Run `neon neon-auth oauth-provider add --project-id delicate-salad-68929211 --provider-id google --oauth-client-id <id> --oauth-client-secret <secret>`.
 3. Fill in the OAuth consent screen branding and publish it.
 
