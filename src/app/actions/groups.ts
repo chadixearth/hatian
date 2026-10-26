@@ -4,7 +4,8 @@ import { refresh } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { db, pgErrorCode } from "@/db";
-import { groups, members } from "@/db/schema";
+import { groupFollows, groups, members } from "@/db/schema";
+import { getSessionUser } from "@/lib/account";
 import { getGroupForWrite } from "@/lib/data";
 import { newGroupId } from "@/lib/ids";
 import { type ActionState, CURRENCIES } from "@/lib/types";
@@ -52,15 +53,24 @@ export async function createGroup(
 
   const id = newGroupId();
   const { name, currency } = parsed.data;
-  await db.batch([
-    db.insert(groups).values({ id, name, currency }),
-    db.insert(members).values(
-      parsed.data.members.map((memberName) => ({
-        groupId: id,
-        name: memberName,
-      })),
-    ),
-  ]);
+  const user = await getSessionUser();
+  const groupInsert = db.insert(groups).values({ id, name, currency });
+  const memberInsert = db.insert(members).values(
+    parsed.data.members.map((memberName) => ({
+      groupId: id,
+      name: memberName,
+    })),
+  );
+  // Signed-in creators get the group saved to their account in the same transaction.
+  if (user) {
+    await db.batch([
+      groupInsert,
+      memberInsert,
+      db.insert(groupFollows).values({ userId: user.id, groupId: id }),
+    ]);
+  } else {
+    await db.batch([groupInsert, memberInsert]);
+  }
   redirect(`/g/${id}`);
 }
 

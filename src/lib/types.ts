@@ -87,6 +87,56 @@ export type GroupView = {
   totalSpentMinor: number;
 };
 
+/** Signed-in Google account (Neon Auth user). */
+export type SessionUser = {
+  id: string;
+  name: string;
+  email: string;
+  image: string | null;
+};
+
+/** Who is looking at a group page. */
+export type GroupViewer = {
+  user: SessionUser | null;
+  /** Member this account is linked to in the group ("this is me"), if any. */
+  memberId: string | null;
+  /** Members already linked to some other account; they can't be picked. */
+  claimedMemberIds: string[];
+};
+
+/** One group saved to the signed-in account. */
+export type MyGroup = {
+  id: string;
+  name: string;
+  currency: Currency;
+  memberCount: number;
+  expenseCount: number;
+  totalSpentMinor: number;
+  myMemberId: string | null;
+  myMemberName: string | null;
+  /** The linked member's balance (same sign rules as Balance.netMinor); null when not linked. */
+  myNetMinor: number | null;
+  /** ISO time of the newest expense or payment; null when the group is empty. */
+  lastActivityAt: string | null;
+  /** ISO time this account last opened the group. */
+  lastViewedAt: string;
+};
+
+/** Totals across linked groups for one currency. Both values are >= 0. */
+export type CurrencyTotal = {
+  currency: Currency;
+  owedToMeMinor: number;
+  iOweMinor: number;
+};
+
+export type MyGroupsView = {
+  user: SessionUser;
+  /** Most recently viewed first. */
+  groups: MyGroup[];
+  /** One row per currency that has at least one linked member; currencies sorted A-Z. */
+  totals: CurrencyTotal[];
+};
+
 export type ActionState =
   | { status: "idle" }
   | { status: "ok"; at: number }

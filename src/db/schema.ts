@@ -126,3 +126,31 @@ export const settlements = pgTable(
     ),
   ],
 );
+
+/**
+ * Groups saved to a signed-in account. user_id is a Neon Auth user (neon_auth."user".id);
+ * the FK to that table is added in SQL (drizzle/0001) because drizzle-kit only manages `public`.
+ * member_id is the account's own member in the group ("this is me"); one account per member.
+ */
+export const groupFollows = pgTable(
+  "group_follows",
+  {
+    userId: uuid().notNull(),
+    groupId: text()
+      .notNull()
+      .references(() => groups.id, { onDelete: "cascade" }),
+    memberId: uuid(),
+    createdAt: createdAt(),
+    lastViewedAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.userId, t.groupId] }),
+    foreignKey({
+      name: "group_follows_member_fk",
+      columns: [t.groupId, t.memberId],
+      foreignColumns: [members.groupId, members.id],
+    }),
+    uniqueIndex("group_follows_member_uq").on(t.groupId, t.memberId),
+    index("group_follows_user_idx").on(t.userId, t.lastViewedAt.desc()),
+  ],
+);
